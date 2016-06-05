@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Stories</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_edit_story">EditStoryActivity</string>
+</resources>

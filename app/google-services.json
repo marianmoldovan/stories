@@ -1,0 +1,50 @@
+{
+  "project_info": {
+    "project_number": "639393165403",
+    "firebase_url": "https://stories-c7a4f.firebaseio.com",
+    "project_id": "stories-c7a4f",
+    "storage_bucket": "stories-c7a4f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639393165403:android:f958ef9ea4b09462",
+        "android_client_info": {
+          "package_name": "com.beeva.travelassistan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "639393165403-se7ph865a33osoncddf9fs1q1b8tnmq9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.beeva.travelassistan",
+            "certificate_hash": "D46FFEF7ACB6D638A5F592316FB668F5B7D9A652"
+          }
+        },
+        {
+          "client_id": "639393165403-i41ledr404nbacil41tk3a0ivi930lgn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT4F88-YzkoHEDgrHWFtNvwPyO5FYKe38"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

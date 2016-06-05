@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_map"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.beeva.travelassistan.MapActivity"
+    tools:showIn="@layout/activity_map">
+
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        app:style_url="@string/style_light"
+        app:access_token="pk.eyJ1IjoibWFyaWFubW9sZG92YW4iLCJhIjoiY2llajJleDdxMDA0dHNtbHpieHZ1OGE5NiJ9.iQxkMy2s65B-YGJfCuYe8A"/>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        style="@android:style/Widget.Material.ProgressBar.Horizontal"
+        tools:ignore="NewApi" />
+
+</android.support.constraint.ConstraintLayout>
