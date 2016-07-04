@@ -41,7 +41,6 @@ dependencies {
     compile('com.mapbox.mapboxsdk:mapbox-android-geocoder:1.0.0@aar') {
         transitive = true
     }
-    compile 'com.kontaktio:sdk:3.0.0'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile project(':smartlocation')
     compile 'com.firebase:firebase-client-android:2.5.2+'

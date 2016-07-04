@@ -11,9 +11,5 @@ public class App extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        KontaktSDK.initialize(this);
-
-        Intent intent = new Intent(this, BackgroundScan.class);
-        startService(intent);
     }
 }

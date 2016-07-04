@@ -13,7 +13,6 @@ public class Story {
     private String author;
     private String text;
     private double lat, lon;
-    private String beaconid;
 
     public String getAuthor() {
         return author;
@@ -54,16 +53,7 @@ public class Story {
         result.put("text", getText());
         result.put("lat", getLat());
         result.put("lon", getLon());
-        result.put("beaconid", getBeaconId());
         return result;
-    }
-
-    public String getBeaconId() {
-        return beaconid;
-    }
-
-    public void setBeaconId(String beaconId) {
-        this.beaconid = beaconId;
     }
 
     @Override

@@ -47,18 +47,7 @@
         <service
             android:name=".GeoFenceIntentService"
             android:exported="false" />
-        <service
-            android:name="com.kontakt.sdk.android.ble.service.ProximityService"
-            android:exported="false" />
 
-        <meta-data
-            android:name="kontakt.io.API_KEY"
-            android:value="sNOPgpnuIHIfClcEvJsuyGHBhpDmNJcT" />
-
-        <service
-            android:name=".BackgroundScan"
-            android:enabled="true"
-            android:exported="true"></service>
     </application>
 
 </manifest>

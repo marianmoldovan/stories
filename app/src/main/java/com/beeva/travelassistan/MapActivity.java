@@ -26,11 +26,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
-import com.kontakt.sdk.android.ble.connection.OnServiceReadyListener;
-import com.kontakt.sdk.android.ble.manager.ProximityManager;
-import com.kontakt.sdk.android.ble.manager.listeners.IBeaconListener;
-import com.kontakt.sdk.android.common.profile.IBeaconDevice;
-import com.kontakt.sdk.android.common.profile.IBeaconRegion;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
@@ -72,7 +67,6 @@ public class MapActivity extends AppCompatActivity {
     private String textHtml;
     private DatabaseReference stories;
     private FirebaseDatabase database;
-    private IBeaconDevice iBeacon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,41 +124,8 @@ public class MapActivity extends AppCompatActivity {
                     }
                 });
 
-
-
         database = FirebaseDatabase.getInstance();
         stories = database.getReference("stories");
-
-
-        final ProximityManager proximityManager = new ProximityManager(this);
-
-        proximityManager.setIBeaconListener(new IBeaconListener() {
-            @Override
-            public void onIBeaconDiscovered(IBeaconDevice beacon, IBeaconRegion region) {
-                Log.d("Beacon", beacon.toString());
-                if(iBeacon == null)
-                    iBeacon = beacon;
-                else if(beacon.getDistance() <= iBeacon.getDistance())
-                    iBeacon = beacon;
-            }
-
-            @Override
-            public void onIBeaconsUpdated(List<IBeaconDevice> iBeacons, IBeaconRegion region) {
-
-            }
-
-            @Override
-            public void onIBeaconLost(IBeaconDevice iBeacon, IBeaconRegion region) {
-
-            }
-        });
-        proximityManager.connect(new OnServiceReadyListener() {
-            @Override
-            public void onServiceReady() {
-                proximityManager.startScanning();
-
-            }
-        });
     }
 
 
@@ -225,8 +186,6 @@ public class MapActivity extends AppCompatActivity {
                     story.setText(textHtml);
                     story.setLat(latLng.getLatitude());
                     story.setLon(latLng.getLongitude());
-                    if(iBeacon != null)
-                        story.setBeaconId(iBeacon.getUniqueId());
 
                     Map<String, Object> postValues = story.toMap();
                     Task<Void> task = stories.push().setValue(story);
