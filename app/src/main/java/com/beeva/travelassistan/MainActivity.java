@@ -2,6 +2,7 @@ package com.beeva.travelassistan;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -47,6 +48,9 @@ import com.sousoum.libgeofencehelper.StorableGeofenceManager;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.nlopez.smartlocation.OnLocationUpdatedListener;
+import io.nlopez.smartlocation.SmartLocation;
 
 public class MainActivity extends AppCompatActivity implements StorableGeofenceManager.StorableGeofenceManagerListener {
 
@@ -137,20 +141,20 @@ public class MainActivity extends AppCompatActivity implements StorableGeofenceM
         };
 
         mAuth.signInAnonymously()
-            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    Log.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
-                    // If sign in fails, display a message to the user. If sign in succeeds
-                    // the auth state listener will be notified and logic to handle the
-                    // signed in user can be handled in the listener.
-                    if (!task.isSuccessful()) {
-                        Log.w(TAG, "signInAnonymously", task.getException());
-                        Toast.makeText(MainActivity.this, "Authentication failed.",
-                                Toast.LENGTH_SHORT).show();
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInAnonymously:onComplete:" + task.isSuccessful());
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInAnonymously", task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
-            });
+                });
 
         FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -166,19 +170,26 @@ public class MainActivity extends AppCompatActivity implements StorableGeofenceM
         final double lat = 52.5119475d;
         final double lon = 13.4228874d;
 
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(final MapboxMap mapboxMap) {
-                CameraPosition position = new CameraPosition.Builder()
-                        .target(new LatLng(lat, lon)) // Sets the new camera position
-                        .zoom(8) // Sets the zoom
-                        .bearing(180) // Rotate the camera
-                        .tilt(30) // Set the camera tilt
-                        .build(); // Creates a CameraPosition from the builder
-                mapboxMap.animateCamera(CameraUpdateFactory
-                        .newCameraPosition(position), 1000);
-            }
-        });
+        SmartLocation.with(this).location()
+                .oneFix()
+                .start(new OnLocationUpdatedListener() {
+                    @Override
+                    public void onLocationUpdated(final Location location) {
+                        mapView.getMapAsync(new OnMapReadyCallback() {
+                            @Override
+                            public void onMapReady(final MapboxMap mapboxMap) {
+                                CameraPosition position = new CameraPosition.Builder()
+                                        .target(new LatLng(location.getLatitude(), location.getLongitude())) // Sets the new camera position
+                                        .zoom(8) // Sets the zoom
+                                        .bearing(180) // Rotate the camera
+                                        .tilt(30) // Set the camera tilt
+                                        .build(); // Creates a CameraPosition from the builder
+                                mapboxMap.animateCamera(CameraUpdateFactory
+                                        .newCameraPosition(position), 1000);
+                            }
+                        });
+                    }
+                });
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);

@@ -93,35 +93,44 @@ public class MapActivity extends AppCompatActivity {
         final double lat = 52.5119475d;
         final double lon = 13.4228874d;
 
-        mapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(final MapboxMap mapboxMap) {
-                CameraPosition position = new CameraPosition.Builder()
-                        .target(new LatLng(lat, lon)) // Sets the new camera position
-                        .zoom(12) // Sets the zoom
-                        .bearing(180) // Rotate the camera
-                        .tilt(30) // Set the camera tilt
-                        .build(); // Creates a CameraPosition from the builder
-                mapboxMap.animateCamera(CameraUpdateFactory
-                        .newCameraPosition(position), 1000);
-
-                mapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
+        SmartLocation.with(this).location()
+                .oneFix()
+                .start(new OnLocationUpdatedListener() {
                     @Override
-                    public void onMapClick(@NonNull LatLng point) {
-                        if(latLng == null){
-                            marker = mapboxMap.addMarker(new MarkerOptions()
-                                    .position(point));
-                        }
-                        else {
-                            marker.setPosition(point);
-                        }
-                        latLng = point;
+                    public void onLocationUpdated(final Location location) {
+                        mapView.getMapAsync(new OnMapReadyCallback() {
+                            @Override
+                            public void onMapReady(final MapboxMap mapboxMap) {
+                                CameraPosition position = new CameraPosition.Builder()
+                                        .target(new LatLng(location.getLatitude(), location.getLongitude())) // Sets the new camera position
+                                        .zoom(12) // Sets the zoom
+                                        .bearing(180) // Rotate the camera
+                                        .tilt(30) // Set the camera tilt
+                                        .build(); // Creates a CameraPosition from the builder
+                                mapboxMap.animateCamera(CameraUpdateFactory
+                                        .newCameraPosition(position), 1000);
+
+                                mapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
+                                    @Override
+                                    public void onMapClick(@NonNull LatLng point) {
+                                        if(latLng == null){
+                                            marker = mapboxMap.addMarker(new MarkerOptions()
+                                                    .position(point));
+                                        }
+                                        else {
+                                            marker.setPosition(point);
+                                        }
+                                        latLng = point;
 
 
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
-            }
-        });
+
+
 
         database = FirebaseDatabase.getInstance();
         stories = database.getReference("stories");
