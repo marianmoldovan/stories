@@ -2,12 +2,14 @@ package com.beeva.travelassistan;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -84,48 +86,60 @@ public class MapActivity extends AppCompatActivity {
         toolbar.setTitleTextColor(Color.BLACK);
         setSupportActionBar(toolbar);
 
-        final double lat = 52.5119475d;
-        final double lon = 13.4228874d;
+        setMap();
 
-        SmartLocation.with(this).location()
+        database = FirebaseDatabase.getInstance();
+        stories = database.getReference("stories");
+    }
+
+    private void setMap() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            setMap(40.4178273d,-3.7222049d);
+        }
+        else {
+            SmartLocation.with(this).location()
                 .oneFix()
                 .start(new OnLocationUpdatedListener() {
                     @Override
                     public void onLocationUpdated(final Location location) {
-                        mapView.getMapAsync(new OnMapReadyCallback() {
-                            @Override
-                            public void onMapReady(final MapboxMap mapboxMap) {
-                                CameraPosition position = new CameraPosition.Builder()
-                                        .target(new LatLng(location.getLatitude(), location.getLongitude())) // Sets the new camera position
-                                        .zoom(12) // Sets the zoom
-                                        .bearing(180) // Rotate the camera
-                                        .tilt(30) // Set the camera tilt
-                                        .build(); // Creates a CameraPosition from the builder
-                                mapboxMap.animateCamera(CameraUpdateFactory
-                                        .newCameraPosition(position), 1000);
+                        setMap(location.getLatitude(), location.getLongitude());
 
-                                mapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
-                                    @Override
-                                    public void onMapClick(@NonNull LatLng point) {
-                                        if(latLng == null){
-                                            marker = mapboxMap.addMarker(new MarkerOptions()
-                                                    .position(point));
-                                        }
-                                        else {
-                                            marker.setPosition(point);
-                                        }
-                                        latLng = point;
-
-
-                                    }
-                                });
-                            }
-                        });
                     }
                 });
+        }
 
-        database = FirebaseDatabase.getInstance();
-        stories = database.getReference("stories");
+
+    }
+
+    private void setMap(final double latitude, final double longitude) {
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(final MapboxMap mapboxMap) {
+                CameraPosition position = new CameraPosition.Builder()
+                        .target(new LatLng(latitude, longitude)) // Sets the new camera position
+                        .zoom(12) // Sets the zoom
+                        .bearing(0) // Rotate the camera
+                        .tilt(30) // Set the camera tilt
+                        .build(); // Creates a CameraPosition from the builder
+                mapboxMap.animateCamera(CameraUpdateFactory
+                        .newCameraPosition(position), 1000);
+
+                mapboxMap.setOnMapClickListener(new MapboxMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(@NonNull LatLng point) {
+                        if(latLng == null){
+                            marker = mapboxMap.addMarker(new MarkerOptions().position(point));
+                        }
+                        else {
+                            marker.setPosition(point);
+                        }
+                        latLng = point;
+
+
+                    }
+                });
+            }
+        });
     }
 
 
@@ -168,9 +182,11 @@ public class MapActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.done:
+                item.setEnabled(false);
+                Toast.makeText(this, "Saving story, just a sec...", Toast.LENGTH_SHORT).show();
                 Log.i("ActionBar", "Nuevo!");
                 if(latLng == null){
                     Toast.makeText(this, "Hey, select a location!", Toast.LENGTH_SHORT).show();
@@ -188,19 +204,8 @@ public class MapActivity extends AppCompatActivity {
                     story.setLon(latLng.getLongitude());
 
                     Map<String, Object> postValues = story.toMap();
-                    Task<Void> task = stories.push().setValue(story);
-                    task.addOnCompleteListener(MapActivity.this, new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            finish();
-                        }
-                    });
-                    task.addOnFailureListener(MapActivity.this, new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
+                    stories.push().setValue(story);
+                    finish();
 
 
                 }

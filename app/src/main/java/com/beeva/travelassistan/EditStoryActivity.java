@@ -75,8 +75,6 @@ public class EditStoryActivity extends AppCompatActivity {
             }
         });
 
-
-
         findViewById(R.id.action_indent).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 mEditor.setIndent();
